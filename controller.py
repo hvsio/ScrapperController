@@ -5,6 +5,8 @@ from mongo_connection import MongoConnection
 from bson.json_util import dumps
 from waitress import serve
 
+#how to run this: waitress-serve --listen=*:8000 controller:api
+
 class BanksResource(object):
 
     def on_get(self, req, resp):
