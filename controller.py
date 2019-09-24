@@ -3,7 +3,7 @@ import json
 from bank_xpath import BankXpath
 from mongo_connection import MongoConnection
 from bson.json_util import dumps
-
+from waitress import serve
 
 class BanksResource(object):
 
@@ -41,3 +41,4 @@ class ScrapperConfiguration(object):
 api = falcon.API()
 banks_endpoints = BanksResource()
 api.add_route('/banks', banks_endpoints)
+serve(api, host='0.0.0.0', port=8000)
