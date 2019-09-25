@@ -4,7 +4,12 @@ from bson.json_util import dumps
 
 
 # Connect to docker container steps.
-# docker run -d -p 27027:27017 --name scrapper-settings mongo //creates a new instance of mongo
+#
+#  //creates a new instance of mongo
+# stop: docker stop scrapper-settings
+# start existing container: docker start scrapper-settings
+# check running containers: docker ps
+# check all containers in local: docker container ls -a //(including stopped ones)
 # docker start scrapper-settings //start the container if you already have created it.
 
 class MongoConnection:
