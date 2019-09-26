@@ -1,46 +1,55 @@
-import falcon
-import json
+from flask import Flask, request, jsonify
 from bank_xpath import BankXpath
 from mongo_connection import MongoConnection
-from bson.json_util import dumps
-from waitress import serve
 
-#how to run this: waitress-serve --listen=*:8000 controller:api
+app = Flask(__name__)
 
-class BanksResource(object):
 
-    def on_get(self, req, resp):
+@app.route('/banks', methods=['GET'])
+def on_get():
+    try:
         mongo_ref = MongoConnection()
-        banks = dumps(mongo_ref.get_banks())
-        resp.body = banks
+        banks = mongo_ref.get_banks()
+        return banks, 200
+    except:
+        return jsonify({"status": "MongoDB error"}), 408
 
-    def on_post(self, req, resp):
-        posted_data = json.loads(req.stream.read())
-        bank = BankXpath(**posted_data)
+
+@app.route('/banks', methods=['POST'])
+def on_post():
+    posted_data = request.get_json()
+    bank = BankXpath(**posted_data)
+    try:
         mongo_ref = MongoConnection()
         if mongo_ref.add_bank(bank) == 0:
-            resp.status = falcon.HTTP_201
-            resp.body = json.dumps({"status": "added"})
+            return jsonify({"status": "added"}), 201
         else:
-            resp.status = falcon.HTTP_400
-            resp.body = json.dumps({"status": "bank already exist"})
+            return jsonify({"status": "bank already exist"}), 400
+    except:
+        return jsonify({"status": "MongoDB error"}), 408
 
-    def on_put(self, req, resp):
-        posted_data = json.loads(req.stream.read())
-        bank = BankXpath(**posted_data)
+
+@app.route('/banks', methods=['PUT'])
+def on_put():
+    posted_data = request.get_json()
+    bank = BankXpath(**posted_data)
+    try:
         mongo_ref = MongoConnection()
         response = mongo_ref.update_bank(bank)
-        resp.status = falcon.HTTP_201
-        resp.body = json.dumps({"status": response})
+        return jsonify({"status": response}), 201
+    except:
+        return jsonify({"status": "MongoDB error"}), 408
 
 
-class ScrapperConfiguration(object):
+@app.route('/banks/<string:bank_id>', methods=['DELETE'])
+def on_delete(bank_id):
+    try:
+        mongo_ref = MongoConnection()
+        mongo_ref.delete(bank_id)
+        return jsonify({"deleted": bank_id}), 200
+    except:
+        return jsonify({"status": "MongoDB error"}), 408
 
-    def on_get(self, req, resp):
-        return {"success"}
 
-
-api = falcon.API()
-banks_endpoints = BanksResource()
-api.add_route('/banks', banks_endpoints)
-serve(api, host='0.0.0.0', port=8000)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8000)
