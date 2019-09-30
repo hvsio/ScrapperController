@@ -19,26 +19,36 @@ def on_get():
 def on_post():
     posted_data = request.get_json()
     bank = BankXpath(**posted_data)
-    try:
-        mongo_ref = MongoConnection()
-        if mongo_ref.add_bank(bank) == 0:
-            return jsonify({"status": "added"}), 201
-        else:
-            return jsonify({"status": "bank already exist"}), 400
-    except:
-        return jsonify({"status": "MongoDB error"}), 408
+    errors = bank.validate()
+    print(errors)
+    if errors:
+        print("entering on errors")
+        return jsonify({"errors": errors}), 400
+    else:
+        try:
+            mongo_ref = MongoConnection()
+            if mongo_ref.add_bank(bank) == 0:
+                return jsonify({"status": "added"}), 201
+            else:
+                return jsonify({"status": "bank already exist"}), 400
+        except:
+            return jsonify({"status": "MongoDB error"}), 408
 
 
 @app.route('/banks', methods=['PUT'])
 def on_put():
     posted_data = request.get_json()
     bank = BankXpath(**posted_data)
-    try:
-        mongo_ref = MongoConnection()
-        response = mongo_ref.update_bank(bank)
-        return jsonify({"status": response}), 201
-    except:
-        return jsonify({"status": "MongoDB error"}), 408
+    errors = bank.validate()
+    if errors:
+        return jsonify({"errors": errors}), 400
+    else:
+        try:
+            mongo_ref = MongoConnection()
+            response = mongo_ref.update_bank(bank)
+            return jsonify({"status": response}), 201
+        except:
+            return jsonify({"status": "MongoDB error"}), 408
 
 
 @app.route('/banks/<string:bank_id>', methods=['DELETE'])
