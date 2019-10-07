@@ -18,6 +18,7 @@ class BankXpath:
         self.buyxpath = buyxpath
         self.sellxpath = sellxpath
 
+
     def to_JSON(self):
         string = json.dumps(self, default=lambda o: getattr(o, '__dict__', str(o)))
         return json.loads(string)

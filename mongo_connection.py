@@ -3,8 +3,7 @@ from bson.json_util import dumps
 
 
 # Connect to docker container steps.
-#
-#  //creates a new instance of mongo
+# docker run -d -p 27027:27017 --name scrapper-settings mongo //creates a new instance of mongo
 # stop: docker stop scrapper-settings
 # start existing container: docker start scrapper-settings
 # check running containers: docker ps
@@ -19,6 +18,7 @@ class MongoConnection:
 
     def add_bank(self, bank):
         data = bank.to_JSON()
+
         print(data)
         query = {"name": bank.name, "country": bank.country}
         if self.xpath_collection.find_one(query):
