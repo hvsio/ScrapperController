@@ -1,5 +1,6 @@
 iso4217
 bson
+libxml2
 validators
 pymongo
 flask
