@@ -3,3 +3,4 @@ bson
 validators
 pymongo
 flask
+lxml
