@@ -12,7 +12,7 @@ from bson.json_util import dumps
 
 class MongoConnection:
     def __init__(self):
-        self.myclient = pymongo.MongoClient("mongodb://0.0.0.0:27027/")
+        self.myclient = pymongo.MongoClient("mongodb://127.0.0.1:27027/")
         self.banks_db = self.myclient["Banks"]
         self.xpath_collection = self.banks_db["xpath"]
 

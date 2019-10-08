@@ -1,5 +1,4 @@
 iso4217
-lxml
 bson
 validators
 pymongo
