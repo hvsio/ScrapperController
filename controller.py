@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from bank_xpath import BankXpath
 from mongo_connection import MongoConnection
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route('/banks', methods=['GET'])

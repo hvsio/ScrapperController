@@ -4,3 +4,4 @@ validators
 pymongo
 flask
 lxml
+flask-cors
