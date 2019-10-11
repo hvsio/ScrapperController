@@ -8,7 +8,7 @@ from country_codes import CC
 
 
 class BankXpath:
-    def __init__(self, name, country, pageurl, fromcurrency, tocurrencyxpath, buyxpath, sellxpath, *args, **kwargs):
+    def __init__(self, name, country, pageurl, fromcurrency, tocurrencyxpath, buyxpath, sellxpath, unit, *args, **kwargs):
         self.id = ObjectId()
         self.name = name
         self.country = country
@@ -17,6 +17,7 @@ class BankXpath:
         self.toCurrencyXpath = tocurrencyxpath
         self.buyxpath = buyxpath
         self.sellxpath = sellxpath
+        self.unit = unit
 
 
     def to_JSON(self):
@@ -33,6 +34,8 @@ class BankXpath:
             errors.append("Empty bank URL")
         if not validators.url(self.pageurl):
             errors.append("Wrong bank URL format")
+        if not self.unit == "M100" and not self.unit == "M1000" and not self.unit == "exchange" and not self.unit == "percentage":
+            errors.append("units valid values [ M100, M1000, exchange, percentage ]")
         try:
             Currency(self.fromCurrency)
         except:

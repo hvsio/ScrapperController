@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+import sys
 from flask_cors import CORS
 from bank_xpath import BankXpath
 from mongo_connection import MongoConnection
@@ -40,7 +41,10 @@ def on_post():
 @app.route('/banks', methods=['PUT'])
 def on_put():
     posted_data = request.get_json()
-    bank = BankXpath(**posted_data)
+    try:
+        bank = BankXpath(**posted_data)
+    except Exception as e:
+        return jsonify({"errors:": "wrong json format"}), 400
     errors = bank.validate()
     if errors:
         return jsonify({"errors": errors}), 400
@@ -49,7 +53,8 @@ def on_put():
             mongo_ref = MongoConnection()
             response = mongo_ref.update_bank(bank)
             return jsonify({"status": response}), 201
-        except:
+        except Exception as e:
+            print(str(e))
             return jsonify({"status": "MongoDB error"}), 408
 
 
@@ -64,4 +69,5 @@ def on_delete(bank_id):
 
 
 if __name__ == '__main__':
+    print(sys.argv)
     app.run(host='0.0.0.0', port=8000)

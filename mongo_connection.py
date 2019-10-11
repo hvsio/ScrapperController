@@ -1,9 +1,11 @@
 import pymongo
+import sys
+from enviroment import Config
 from bson.json_util import dumps
 
 
 # Connect to docker container steps.
-# docker run -d -p 27027:27017 --name scrapper-settings mongo //creates a new instance of mongo
+#  //creates a new instance of mongo
 # stop: docker stop scrapper-settings
 # start existing container: docker start scrapper-settings
 # check running containers: docker ps
@@ -12,14 +14,18 @@ from bson.json_util import dumps
 
 class MongoConnection:
     def __init__(self):
-        self.myclient = pymongo.MongoClient("mongodb://127.0.0.1:27027/")
-        self.banks_db = self.myclient["Banks"]
-        self.xpath_collection = self.banks_db["xpath"]
+        try:
+            Config.initialize()
+            environment = Config.cloud('DATABASE') if sys.argv[1] == 'cloud' else Config.dev('DATABASE')
+            self.myclient = pymongo.MongoClient(environment)
+            self.banks_db = self.myclient["Banks"]
+            self.xpath_collection = self.banks_db["xpath"]
+        except Exception as e:
+            print(e)
+
 
     def add_bank(self, bank):
         data = bank.to_JSON()
-
-        print(data)
         query = {"name": bank.name, "country": bank.country}
         if self.xpath_collection.find_one(query):
             return -1
