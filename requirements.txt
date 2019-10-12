@@ -1,7 +1,7 @@
 iso4217
 validators
-pymongo
-pymongo[srv]
+pymongo[tls,srv]
 flask
 lxml
 flask-cors
+configparser

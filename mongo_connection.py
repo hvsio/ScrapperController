@@ -1,5 +1,6 @@
 import pymongo
 import sys
+import os
 from enviroment import Config
 from bson.json_util import dumps
 
@@ -17,12 +18,12 @@ class MongoConnection:
         try:
             Config.initialize()
             environment = Config.cloud('DATABASE') if sys.argv[1] == 'cloud' else Config.dev('DATABASE')
+            print(environment)
             self.myclient = pymongo.MongoClient(environment)
             self.banks_db = self.myclient["Banks"]
             self.xpath_collection = self.banks_db["xpath"]
         except Exception as e:
-            print(e)
-
+            self.error = str(e)
 
     def add_bank(self, bank):
         data = bank.to_JSON()

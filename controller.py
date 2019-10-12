@@ -1,8 +1,11 @@
 from flask import Flask, request, jsonify
 import sys
+import os
 from flask_cors import CORS
 from bank_xpath import BankXpath
 from mongo_connection import MongoConnection
+from enviroment import Config
+
 
 app = Flask(__name__)
 CORS(app)
@@ -14,8 +17,10 @@ def on_get():
         mongo_ref = MongoConnection()
         banks = mongo_ref.get_banks()
         return banks, 200
-    except:
-        return jsonify({"status": "MongoDB error"}), 408
+    except Exception as e:
+        Config.initialize()
+        environment = Config.cloud('DATABASE') if sys.argv[1] == 'cloud' else Config.dev('DATABASE')
+        return jsonify({"status": environment}), 408
 
 
 @app.route('/banks', methods=['POST'])
@@ -25,7 +30,6 @@ def on_post():
     errors = bank.validate()
     print(errors)
     if errors:
-        print("entering on errors")
         return jsonify({"errors": errors}), 400
     else:
         try:
@@ -34,8 +38,8 @@ def on_post():
                 return jsonify({"status": "added"}), 201
             else:
                 return jsonify({"status": "bank already exist"}), 400
-        except:
-            return jsonify({"status": "MongoDB error"}), 408
+        except Exception as e:
+            return jsonify({"status": str(mongo_ref.error)}), 408
 
 
 @app.route('/banks', methods=['PUT'])
@@ -54,7 +58,6 @@ def on_put():
             response = mongo_ref.update_bank(bank)
             return jsonify({"status": response}), 201
         except Exception as e:
-            print(str(e))
             return jsonify({"status": "MongoDB error"}), 408
 
 
