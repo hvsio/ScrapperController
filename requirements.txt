@@ -5,3 +5,4 @@ flask
 lxml
 flask-cors
 configparser
+pytest
