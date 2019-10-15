@@ -1,7 +1,7 @@
 steps:
 # This steps clone the repository into GCP
 - name: gcr.io/cloud-builders/git
-  args: ['clone', 'https://github.com/PatrickVibild/scrappercontroller']
+  args: ['clone', 'https://PatrickVibild:iTalia_2004@github.com/PatrickVibild/scrappercontroller']
 # This step runs the unit tests on the app
 - name: 'docker.io/library/python:3.7'
   id: Test
