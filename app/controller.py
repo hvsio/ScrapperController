@@ -1,10 +1,9 @@
 from flask import Flask, request, jsonify
 import sys
-import os
 from flask_cors import CORS
-from bank_xpath import BankXpath
-from mongo_connection import MongoConnection
-from enviroment import Config
+from app.bank_xpath import BankXpath
+from app.mongo_connection import MongoConnection
+from app.environment.enviroment import Config
 
 
 app = Flask(__name__)

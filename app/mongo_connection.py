@@ -1,7 +1,6 @@
 import pymongo
 import sys
-import os
-from enviroment import Config
+from app.environment.enviroment import Config
 from bson.json_util import dumps
 
 
