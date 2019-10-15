@@ -6,7 +6,8 @@ class Config:
     """Interact with configuration variables."""
 
     configParser = ConfigParser()
-    configFilePath = (os.path.join(os.getcwd(), 'config.ini'))
+    configFilePath = (os.path.join(os.getcwd(), 'environment/config.ini'))
+    print(configFilePath)
     if os.path.isfile(configFilePath):
         print("we got a file")
 

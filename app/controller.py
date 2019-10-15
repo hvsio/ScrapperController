@@ -38,7 +38,7 @@ def on_post():
             else:
                 return jsonify({"status": "bank already exist"}), 400
         except Exception as e:
-            return jsonify({"status": str(mongo_ref.error)}), 408
+            return jsonify({"status": "timeout"}), 408
 
 
 @app.route('/banks', methods=['PUT'])
@@ -71,5 +71,4 @@ def on_delete(bank_id):
 
 
 if __name__ == '__main__':
-    print(sys.argv)
     app.run(host='0.0.0.0', port=8000)

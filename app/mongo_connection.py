@@ -16,7 +16,8 @@ class MongoConnection:
     def __init__(self):
         try:
             Config.initialize()
-            environment = Config.cloud('DATABASE') if sys.argv[1] == 'cloud' else Config.dev('DATABASE')
+            environment = Config.cloud('DATABASE') if (len(sys.argv) > 1 and sys.argv[1] == 'cloud') else Config.dev(
+                'DATABASE')
             print(environment)
             self.myclient = pymongo.MongoClient(environment)
             self.banks_db = self.myclient["Banks"]
