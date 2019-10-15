@@ -8,7 +8,7 @@ steps:
   entrypoint: /bin/sh
   args:
   - -c
-  - 'pip install -r requirements.txt && python -m pytest'
+  - 'pip install -r requirements.txt && python -m pytest app/tests/**'
 #This step creates a container and leave it on CloudBuilds repository.
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/abiding-robot-255320/scrappercontroller', '.']
