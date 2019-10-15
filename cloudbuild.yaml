@@ -1,16 +1,19 @@
 steps:
-# This steps clone the repository into GCP
-- name: gcr.io/cloud-builders/git
-  args: ['clone', 'https://PatrickVibild:iTalia_2004@github.com/PatrickVibild/scrappercontroller']
-# This step runs the unit tests on the app
-- name: 'docker.io/library/python:3.7'
-  id: Test
-  entrypoint: /bin/sh
-  args:
-  - -c
-  - 'pip install -r requirements.txt && python -m pytest app/tests/**'
-#This step creates a container and leave it on CloudBuilds repository.
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/abiding-robot-255320/scrappercontroller', '.']
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/abiding-robot-255320/scrappercontroller']
+
+  # This steps clone the repository into GCP
+  - name: gcr.io/cloud-builders/git
+    args: ['clone', 'https://PatrickVibild:iTalia_2004@github.com/PatrickVibild/scrappercontroller']
+
+  # This step runs the unit tests on the app
+  - name: 'docker.io/library/python:3.7'
+    id: Test
+    entrypoint: /bin/sh
+    args:
+      - -c
+      - 'pip install -r requirements.txt && python -m pytest app/tests/**'
+
+  #This step creates a container and leave it on CloudBuilds repository.
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/abiding-robot-255320/scrappercontroller', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/abiding-robot-255320/scrappercontroller']
