@@ -22,7 +22,7 @@ steps:
 
   #Uses the container and replaces the existing one in Kubernetes
   - name: 'gcr.io/cloud-builders/kubectl'
-    args: ['set', 'image', 'deployment/my-deployment', 'my-container=gcr.io/abiding-robot-255320/scrappercontroller']
+    args: ['set', 'image', 'deployment/scrapper-config', 'my-container=gcr.io/abiding-robot-255320/scrappercontroller']
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
       - 'CLOUDSDK_CONTAINER_CLUSTER=n1scrapping'
