@@ -12,3 +12,5 @@ steps:
 #This step creates a container and leave it on CloudBuilds repository.
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/abiding-robot-255320/scrappercontroller', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/abiding-robot-255320/scrappercontroller']
