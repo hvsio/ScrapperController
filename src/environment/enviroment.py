@@ -6,7 +6,10 @@ class Config:
     """Interact with configuration variables."""
 
     configParser = ConfigParser()
-    configFilePath = (os.path.join(os.getcwd(), 'environment/config.ini'))
+    configFilePath = (os.path.join(os.getcwd(), 'src/environment/config.ini'))
+    # for running the applicationg outside a container, so we dont have to initialize a PYTHONPATH in local.
+    if not os.path.exists(configFilePath):
+        configFilePath = (os.path.join(os.getcwd(), 'environment/config.ini'))
     print(configFilePath)
     if os.path.isfile(configFilePath):
         print("we got a file")

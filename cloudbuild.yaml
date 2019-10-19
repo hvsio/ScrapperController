@@ -4,13 +4,13 @@ steps:
   - name: gcr.io/cloud-builders/git
     args: ['clone', 'https://PatrickVibild:iTalia_2004@github.com/PatrickVibild/scrappercontroller']
 
-  # This step runs the unit tests on the app
+  # This step runs the unit tests on the src
   - name: 'docker.io/library/python:3.7'
     id: Test
     entrypoint: /bin/sh
     args:
       - -c
-      - 'pip install -r requirements.txt && python -m pytest app/tests/**'
+      - 'pip install -r requirements.txt && python -m pytest src/tests/**'
 
   #This step creates a container and leave it on CloudBuilds repository.
   - name: 'gcr.io/cloud-builders/docker'

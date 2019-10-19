@@ -1,11 +1,11 @@
 import json
 import lxml.etree
 import validators
-from app.dictionary import ERRORS
+from src.dictionary import ERRORS
 from bson import ObjectId
 from iso4217 import Currency
 
-from app.country_codes import CC
+from src.country_codes import CC
 
 
 class BankXpath:
