@@ -6,4 +6,4 @@ COPY ./host.crt /usr/local/share/ca-certificates
 RUN update-ca-certificates
 RUN pip install -r requirements.txt
 EXPOSE 8000
-CMD python ./controller.py cloud
+CMD python ./app/controller.py cloud
