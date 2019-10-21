@@ -1,10 +1,7 @@
 from flask import Flask, request, jsonify
-import sys
 from flask_cors import CORS
 from src.bank_xpath import BankXpath
 from src.mongo_connection import MongoConnection
-from src.environment.enviroment import Config
-
 
 app = Flask(__name__)
 CORS(app)
@@ -17,12 +14,6 @@ def on_get():
         banks = mongo_ref.get_banks()
         return banks, 200
     except Exception as e:
-        try:
-            Config.initialize()
-            environment = Config.cloud('DATABASE') if sys.argv[1] == 'cloud' else Config.dev('DATABASE')
-        except Exception as a:
-            return jsonify({"status": str(Config.configFilePath)}), 408
-
         return jsonify({"status": str(e)}), 408
 
 

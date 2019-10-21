@@ -22,6 +22,7 @@ class MongoConnection:
             self.myclient = pymongo.MongoClient(environment)
             self.banks_db = self.myclient["Banks"]
             self.xpath_collection = self.banks_db["xpath"]
+
         except Exception as e:
             self.error = str(e)
 
