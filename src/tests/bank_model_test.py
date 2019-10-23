@@ -61,7 +61,7 @@ class TestingBanksModels(unittest.TestCase):
         self.assertEqual(bankObject.validate(), error)
 
 
-def create_correct_bank() -> BankXpath:
+def create_correct_bank():
     return BankXpath("Danske bank", "DK", "http://www.danskebank.com", "DKK",
                      "/html/body/div[1]/div[4]/div/div[2]/div[1]/div[2]/table/tbody/tr[1]/td[1]",
                      "/html/body/div[1]/div[4]/div/div[2]/div[1]/div[2]/table/tbody/tr[1]/td[2]/div/div",
