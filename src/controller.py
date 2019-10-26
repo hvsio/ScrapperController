@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 
-@app.route('/banks', methods=['GET'])
+'''@app.route('/banks', methods=['GET'])
 def on_get():
     try:
         mongo_ref = MongoConnection()
@@ -15,6 +15,7 @@ def on_get():
         return banks, 404
     except Exception as e:
         return jsonify({"status": str(e)}), 408
+        '''
 
 
 @app.route('/banks', methods=['POST'])
