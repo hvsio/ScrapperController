@@ -16,15 +16,18 @@ steps:
 
   #This step creates a container and leave it on CloudBuilds repository.
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/abiding-robot-255320/scrappercontroller:$COMMIT_SHA', '.']
+    id: Build
+    args: ['build', '-t', 'gcr.io/abiding-robot-255320/scrappercontroller:$SHORT_SHA', '.']
 
   #Adds the container to Google container registry as an artefact
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/abiding-robot-255320/scrappercontroller:$COMMIT_SHA']
+    id: Container push
+    args: ['push', 'gcr.io/abiding-robot-255320/scrappercontroller:$SHORT_SHA']
 
   #Uses the container and replaces the existing one in Kubernetes
   - name: 'gcr.io/cloud-builders/kubectl'
-    args: ['set', 'image', 'deployment/scrappercontroller', 'scrappercontroller-sha256=gcr.io/abiding-robot-255320/scrappercontroller:COMMIT_SHA']
+    id: Kubernetes deployment
+    args: ['set', 'image', 'deployment/scrappercontroller', 'scrappercontroller-sha256=gcr.io/abiding-robot-255320/scrappercontroller:$SHORT_SHA']
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
       - 'CLOUDSDK_CONTAINER_CLUSTER=scrapper-admin'
