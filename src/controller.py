@@ -12,10 +12,9 @@ def on_get():
     try:
         mongo_ref = MongoConnection()
         banks = mongo_ref.get_banks()
-        return banks, 201
+        return banks, 404
     except Exception as e:
         return jsonify({"status": str(e)}), 408
-
 
 
 @app.route('/banks', methods=['POST'])
