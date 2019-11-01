@@ -12,7 +12,7 @@ class Config:
         configFilePath = (os.path.join(os.getcwd(), 'environment/config.ini'))
     print(configFilePath)
     if os.path.isfile(configFilePath):
-        print("we got a file")
+        print("got a file")
 
     @classmethod
     def initialize(cls):

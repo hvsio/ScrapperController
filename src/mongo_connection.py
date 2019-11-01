@@ -41,7 +41,7 @@ class MongoConnection:
         return data
 
     def update_bank(self, bank):
-        query = {"name": bank.name, "country": bank.country}
+        query = {"id": bank.id}
         if self.xpath_collection.find(query):
             data = bank.to_JSON()
             self.xpath_collection.replace_one({"name": bank.name, "country": bank.country}, data)
