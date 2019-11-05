@@ -66,4 +66,7 @@ def create_correct_bank():
                      "/html/body/div[1]/div[4]/div/div[2]/div[1]/div[2]/table/tbody/tr[1]/td[1]",
                      "/html/body/div[1]/div[4]/div/div[2]/div[1]/div[2]/table/tbody/tr[1]/td[2]/div/div",
                      "/html/body/div[1]/div[4]/div/div[2]/div[1]/div[2]/table/tbody/tr[8]/td[2]/div/div",
-                     "M100")
+                     "M100",
+                     "/html/body/div[1]/div[4]/div/div[2]/div[1]/div[2]/table/tbody/tr[8]/td[2]/div/div",
+                     False
+                     )
