@@ -9,7 +9,7 @@ from src.country_codes import CC
 
 
 class BankXpath:
-    def __init__(self, name, country, pageurl, fromcurrency, tocurrencyxpath, buyxpath, sellxpath, unit, *args,
+    def __init__(self, name, country, pageurl, fromcurrency, tocurrencyxpath, buyxpath, sellxpath, unit, exchangeunitxpath, iscrossinverted, *args,
                  **kwargs):
         self.id = ObjectId()
         self.name = name
@@ -20,6 +20,8 @@ class BankXpath:
         self.buyxpath = buyxpath
         self.sellxpath = sellxpath
         self.unit = unit
+        self.exchangeunitxpath = exchangeunitxpath
+        self.iscrossinverted = iscrossinverted
 
     def to_JSON(self):
         string = json.dumps(self, default=lambda o: getattr(o, '__dict__', str(o)))
