@@ -4,14 +4,18 @@ import validators
 from src.dictionary import ERRORS
 from bson import ObjectId
 from iso4217 import Currency
-
+from flask import Response, json
 from src.country_codes import CC
 
 
 class BankXpath:
-    def __init__(self, name, country, pageurl, fromcurrency, tocurrencyxpath, buyxpath, sellxpath, unit, exchangeunitxpath, iscrossinverted, *args,
+    def __init__(self, name, country, pageurl, fromcurrency, tocurrencyxpath, buyxpath, sellxpath, unit,
+                 exchangeunitxpath, iscrossinverted, *args,
                  **kwargs):
-        self.id = ObjectId()
+        if 'id' in kwargs:
+            self.id = kwargs.get('id')
+        else:
+            self.id = ObjectId()
         self.name = name
         self.country = country
         self.pageurl = pageurl
@@ -56,4 +60,11 @@ class BankXpath:
             lxml.etree.XPath(self.toCurrencyXpath)
         except:
             errors.append(ERRORS["sell_exchange_xpath"])
-        return errors
+        if errors:
+            error_message = {"errors": errors}
+            return Response(
+                response=json.dumps(error_message),
+                status=400,
+                mimetype='application/json')
+        else:
+            return None

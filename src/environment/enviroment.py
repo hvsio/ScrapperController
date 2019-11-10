@@ -17,7 +17,6 @@ class Config:
     @classmethod
     def initialize(cls):
         """Start config by reading config.ini."""
-        print("initializing")
         cls.configParser.read(cls.configFilePath, encoding='utf-8')
 
     @classmethod

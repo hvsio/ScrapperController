@@ -2,6 +2,7 @@ import pymongo
 import sys
 from src.environment.enviroment import Config
 from bson.json_util import dumps
+from flask import Response, json
 
 
 # Connect to docker container steps.
@@ -13,45 +14,84 @@ from bson.json_util import dumps
 # docker start scrapper-settings //start the container if you already have created it.
 
 class MongoConnection:
-    def __init__(self):
+    TimeoutResponse = Response(response=json.dumps({'status': 'MongoDB timeout'}),
+                               status=408,
+                               mimetype='application/json')
+
+    @staticmethod
+    def update_bank(bank):
         try:
-            Config.initialize()
-            environment = Config.cloud('DATABASE') if (len(sys.argv) > 1 and sys.argv[1] == 'cloud') else Config.dev(
-                'DATABASE')
-            print(environment)
-            self.myclient = pymongo.MongoClient(environment)
-            self.banks_db = self.myclient["Banks"]
-            self.xpath_collection = self.banks_db["xpath"]
-
+            databaseRef = MongoConnection.connect_to_database()
+            query = {"id": bank.id}
+            data = bank.to_JSON()
+            if databaseRef.find_one(query):
+                databaseRef.find_one_and_replace(query, data)
+                return Response(response=json.dumps({'status': 'updated'}),
+                                status=200,
+                                mimetype='application/json')
+            else:
+                return MongoConnection.add_bank(bank)
         except Exception as e:
-            self.error = str(e)
+            return MongoConnection.log_and_return_error_response(e)
 
-    def add_bank(self, bank):
-        data = bank.to_JSON()
-        query = {"name": bank.name, "country": bank.country}
-        if self.xpath_collection.find_one(query):
-            return -1
-        else:
-            self.xpath_collection.insert(data)
-            return 0
+    @staticmethod
+    def delete(bank_id):
+        try:
+            databaseRef = MongoConnection.connect_to_database()
+            query = {"id": bank_id}
+            result = databaseRef.find_one(query)
+            if result:
+                databaseRef.delete_one(query)
+                return Response(response=json.dumps({'status': 'deleted'}),
+                                status=200,
+                                mimetype='application/json')
+            else:
+                return Response(response=json.dumps({'status': 'bank does not exist'}),
+                                status=400,
+                                mimetype='application/json')
+        except Exception as e:
+            return MongoConnection.log_and_return_error_response(e)
 
-    def get_banks(self):
-        data = self.xpath_collection.find({}, {"_id": 0, })
-        data = dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
-        return data
+    @staticmethod
+    def connect_to_database():
+        Config.initialize()
+        environment = Config.cloud('DATABASE') if (len(sys.argv) > 1 and sys.argv[1] == 'cloud') else Config.dev(
+            'DATABASE')
+        myClient = pymongo.MongoClient(environment)
+        banks_db = myClient["Banks"]
+        return banks_db["xpath"]
 
-    def update_bank(self, bank):
-        query = {"id": bank.id}
-        if self.xpath_collection.find(query):
+    @staticmethod
+    def add_bank(bank):
+        try:
+            databaseRef = MongoConnection.connect_to_database()
             data = bank.to_JSON()
-            self.xpath_collection.replace_one({"name": bank.name, "country": bank.country}, data)
-            return "updated"
-        else:
-            data = bank.to_JSON()
-            self.add_bank(data)
-            return "added"
+            query = {"name": bank.name, "country": bank.country}
+            if databaseRef.find_one(query):
+                return Response(response=json.dumps({'status': 'bank already exist'}),
+                                status=400,
+                                mimetype='application/json')
+            else:
+                databaseRef.insert(data)
+                return Response(response=json.dumps({'status': 'added'}),
+                                status=201,
+                                mimetype='application/json')
+        except Exception as e:
+            return MongoConnection.log_and_return_error_response(e)
 
-    def delete(self, bank_id):
-        query = {"id": bank_id}
-        result = self.xpath_collection.delete_one(query)
-        print(result)
+    @staticmethod
+    def get_banks():
+        try:
+            data = MongoConnection.connect_to_database().find({}, {"_id": 0, })
+            banks = dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
+            return Response(response=banks,
+                            status=201,
+                            mimetype='application/json')
+        except Exception as e:
+            return MongoConnection.log_and_return_error_response(e)
+
+    @staticmethod
+    def log_and_return_error_response(exception):
+        # TODO log exception variable
+        print(str(exception))
+        return MongoConnection.TimeoutResponse

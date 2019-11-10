@@ -9,60 +9,34 @@ CORS(app)
 
 @app.route('/banks', methods=['GET'])
 def on_get():
-    try:
-        mongo_ref = MongoConnection()
-        banks = mongo_ref.get_banks()
-        return banks, 201
-    except Exception as e:
-        return jsonify({"status": str(e)}), 408
+    return MongoConnection.get_banks()
 
 
 @app.route('/banks', methods=['POST'])
 def on_post():
     posted_data = request.get_json()
     bank = BankXpath(**posted_data)
-    errors = bank.validate()
-    print(errors)
-    if errors:
-        return jsonify({"errors": errors}), 400
+    validation = bank.validate()
+    if validation:
+        return validation
     else:
-        try:
-            mongo_ref = MongoConnection()
-            if mongo_ref.add_bank(bank) == 0:
-                return jsonify({"status": "added"}), 201
-            else:
-                return jsonify({"status": "bank already exist"}), 400
-        except Exception as e:
-            return jsonify({"status": "timeout"}), 408
+        return MongoConnection.add_bank(bank)
 
 
 @app.route('/banks', methods=['PUT'])
 def on_put():
     posted_data = request.get_json()
-    try:
-        bank = BankXpath(**posted_data)
-    except Exception as e:
-        return jsonify({"errors:": "wrong json format"}), 400
-    errors = bank.validate()
-    if errors:
-        return jsonify({"errors": errors}), 400
+    bank = BankXpath(**posted_data)
+    validation = bank.validate()
+    if validation:
+        return validation
     else:
-        try:
-            mongo_ref = MongoConnection()
-            response = mongo_ref.update_bank(bank)
-            return jsonify({"status": response}), 201
-        except Exception as e:
-            return jsonify({"status": "MongoDB error"}), 408
+        return MongoConnection.update_bank(bank)
 
 
 @app.route('/banks/<string:bank_id>', methods=['DELETE'])
 def on_delete(bank_id):
-    try:
-        mongo_ref = MongoConnection()
-        mongo_ref.delete(bank_id)
-        return jsonify({"deleted": bank_id}), 200
-    except:
-        return jsonify({"status": "MongoDB error"}), 408
+    return MongoConnection.delete(bank_id)
 
 
 if __name__ == '__main__':
