@@ -9,25 +9,29 @@ class TestingBanksModels(unittest.TestCase):
         bankObject = create_correct_bank()
         bankObject.fromCurrency = "Danish Krones"
         error = [ERRORS["wrong_from_currency"]]
-        self.assertEqual(bankObject.validate(), error)
+        self.assertEqual(bankObject.validate().json.get('errors'), error)
+        self.assertEqual(bankObject.validate().status_code, 400)
 
     def test_bank_wrong_name(self):
         bankObject = create_correct_bank()
         bankObject.name = ""
         error = [ERRORS["wrong_bank_name"]]
-        self.assertEqual(bankObject.validate(), error)
+        self.assertEqual(bankObject.validate().json.get('errors'), error)
+        self.assertEqual(bankObject.validate().status_code, 400)
 
     def test_bank_wrong_URL(self):
         bankObject = create_correct_bank()
         bankObject.pageurl = "www.google.com"
         error = [ERRORS["bank_url_error"]]
-        self.assertEqual(bankObject.validate(), error)
+        self.assertEqual(bankObject.validate().json.get('errors'), error)
+        self.assertEqual(bankObject.validate().status_code, 400)
 
     def test_bank_empty_URL(self):
         bankObject = create_correct_bank()
         bankObject.pageurl = ''
         error = [ERRORS["empty_url"], ERRORS["bank_url_error"]]
-        self.assertEqual(bankObject.validate(), error)
+        self.assertEqual(bankObject.validate().json.get('errors'), error)
+        self.assertEqual(bankObject.validate().status_code, 400)
 
     def test_bank_wrong_xpath(self):
         bankObject = create_correct_bank()
@@ -35,30 +39,30 @@ class TestingBanksModels(unittest.TestCase):
         bankObject.buyxpath = "_html!body"
         bankObject.sellxpath = "www.danskebank.com"
         error = [ERRORS["to_currency_xpath"], ERRORS["buy_exchange_xpath"], ERRORS["sell_exchange_xpath"]]
-        self.assertEqual(bankObject.validate(), error)
+        self.assertEqual(bankObject.validate().json.get('errors'), error)
+        self.assertEqual(bankObject.validate().status_code, 400)
 
     def test_bank_wrong_units(self):
         bankObject = create_correct_bank()
         bankObject.unit = "%"
         error = [ERRORS["wrong_unit"]]
-        self.assertEqual(bankObject.validate(), error)
+        self.assertEqual(bankObject.validate().json.get('errors'), error)
+        self.assertEqual(bankObject.validate().status_code, 400)
 
     def test_bank_correct_units(self):
         bankObject = create_correct_bank()
-        error = []
         bankObject.unit = "M100"
-        self.assertEqual(bankObject.validate(), error)
+        self.assertIsNone(bankObject.validate())
         bankObject.unit = "M1000"
-        self.assertEqual(bankObject.validate(), error)
+        self.assertIsNone(bankObject.validate())
         bankObject.unit = "percentage"
-        self.assertEqual(bankObject.validate(), error)
+        self.assertIsNone(bankObject.validate())
         bankObject.unit = "exchange"
-        self.assertEqual(bankObject.validate(), error)
+        self.assertIsNone(bankObject.validate())
 
     def test_valid_bank(self):
         bankObject = create_correct_bank()
-        error = []
-        self.assertEqual(bankObject.validate(), error)
+        self.assertIsNone(bankObject.validate())
 
 
 def create_correct_bank():
