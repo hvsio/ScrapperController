@@ -41,7 +41,7 @@ class BankXpath:
             errors.append(ERRORS["empty_url"])
         if not validators.url(self.pageurl):
             errors.append(ERRORS["bank_url_error"])
-        if not self.unit == "M100" and not self.unit == "M1000" and not self.unit == "exchange" \
+        if not self.unit == "M100" and not self.unit == "exchange100" and not self.unit == "exchange" \
                 and not self.unit == "percentage":
             errors.append(ERRORS["wrong_unit"])
         try:
