@@ -53,7 +53,7 @@ class TestingBanksModels(unittest.TestCase):
         bankObject = create_correct_bank()
         bankObject.unit = "M100"
         self.assertIsNone(bankObject.validate())
-        bankObject.unit = "M1000"
+        bankObject.unit = "exchange100"
         self.assertIsNone(bankObject.validate())
         bankObject.unit = "percentage"
         self.assertIsNone(bankObject.validate())
