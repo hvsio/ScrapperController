@@ -12,8 +12,8 @@ class Fee:
         else:
             self.id = ObjectId()
         self.country = country
-        self.sepa = sepa
-        self.intl = intl
+        self.sepa = float(sepa)
+        self.intl = float(intl)
 
     def to_JSON(self):
         string = json.dumps(self, default=lambda o: getattr(o, '__dict__', str(o)))
