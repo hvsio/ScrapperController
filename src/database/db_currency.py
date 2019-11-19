@@ -5,40 +5,32 @@ from bson.json_util import dumps
 from flask import Response, json
 
 
-# Connect to docker container steps.
-#  //creates a new instance of mongo
-# stop: docker stop scrapper-settings
-# start existing container: docker start scrapper-settings
-# check running containers: docker ps
-# check all containers in local: docker container ls -a //(including stopped ones)
-# docker start scrapper-settings //start the container if you already have created it.
-
-class MongoConnection:
+class DatabaseCurrency:
     TimeoutResponse = Response(response=json.dumps({'status': 'MongoDB timeout'}),
                                status=408,
                                mimetype='application/json')
 
     @staticmethod
-    def update_bank(bank):
+    def update_currency(currency):
         try:
-            databaseRef = MongoConnection.connect_to_database()
-            query = {"id": bank.id}
-            data = bank.to_JSON()
+            databaseRef = DatabaseCurrency.connect_to_database()
+            query = {"id": currency.id}
+            data = currency.to_JSON()
             if databaseRef.find_one(query):
                 databaseRef.find_one_and_replace(query, data)
                 return Response(response=json.dumps({'status': 'updated'}),
                                 status=200,
                                 mimetype='application/json')
             else:
-                return MongoConnection.add_bank(bank)
+                return DatabaseCurrency.add_currency(currency)
         except Exception as e:
-            return MongoConnection.log_and_return_error_response(e)
+            return DatabaseCurrency.log_and_return_error_response(e)
 
     @staticmethod
-    def delete(bank_id):
+    def delete(currency_id):
         try:
-            databaseRef = MongoConnection.connect_to_database()
-            query = {"id": bank_id}
+            databaseRef = DatabaseCurrency.connect_to_database()
+            query = {"id": currency_id}
             result = databaseRef.find_one(query)
             if result:
                 databaseRef.delete_one(query)
@@ -50,7 +42,7 @@ class MongoConnection:
                                 status=400,
                                 mimetype='application/json')
         except Exception as e:
-            return MongoConnection.log_and_return_error_response(e)
+            return DatabaseCurrency.log_and_return_error_response(e)
 
     @staticmethod
     def connect_to_database():
@@ -58,15 +50,15 @@ class MongoConnection:
         environment = Config.cloud('DATABASE') if (len(sys.argv) > 1 and sys.argv[1] == 'cloud') else Config.dev(
             'DATABASE')
         myClient = pymongo.MongoClient(environment)
-        banks_db = myClient["Banks"]
-        return banks_db["xpath"]
+        currency_db = myClient["AllowedCurrencies"]
+        return currency_db["allowed"]
 
     @staticmethod
-    def add_bank(bank):
+    def add_currency(currency):
         try:
-            databaseRef = MongoConnection.connect_to_database()
-            data = bank.to_JSON()
-            query = {"name": bank.name, "country": bank.country}
+            databaseRef = DatabaseCurrency.connect_to_database()
+            data = currency.to_JSON()
+            query = {"name": currency.name, "country": currency.country}
             if databaseRef.find_one(query):
                 return Response(response=json.dumps({'status': 'bank already exist'}),
                                 status=400,
@@ -77,21 +69,21 @@ class MongoConnection:
                                 status=201,
                                 mimetype='application/json')
         except Exception as e:
-            return MongoConnection.log_and_return_error_response(e)
+            return DatabaseCurrency.log_and_return_error_response(e)
 
     @staticmethod
-    def get_banks():
+    def get_currency():
         try:
-            data = MongoConnection.connect_to_database().find({}, {"_id": 0, })
-            banks = dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
-            return Response(response=banks,
+            data = DatabaseCurrency.connect_to_database().find({}, {"_id": 0, })
+            currencies = dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
+            return Response(response=currencies,
                             status=201,
                             mimetype='application/json')
         except Exception as e:
-            return MongoConnection.log_and_return_error_response(e)
+            return DatabaseCurrency.log_and_return_error_response(e)
 
     @staticmethod
     def log_and_return_error_response(exception):
         # TODO log exception variable
         print(str(exception))
-        return MongoConnection.TimeoutResponse
+        return DatabaseCurrency.TimeoutResponse

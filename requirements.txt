@@ -1,3 +1,5 @@
+bson
+ccy
 iso4217
 validators
 pymongo[tls,srv]

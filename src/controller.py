@@ -1,9 +1,12 @@
-import json
-
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from flask_cors import CORS
 from src.bank_xpath import BankXpath
-from src.fees import Fee
+from src.database.db_country import DatabaseCountry
+from src.database.db_fees import DatabaseFees
+from src.database.db_currency import DatabaseCurrency
+from src.models.allowed_country_object import Country
+from src.models.allowed_currency_object import Currency
+from src.models.fee_object import Fee
 from src.mongo_connection import MongoConnection
 
 app = Flask(__name__)
@@ -43,11 +46,10 @@ def on_delete(bank_id):
     return MongoConnection.delete(bank_id)
 
 
-# ----------- Szymon's efforts below :) ------
-
+# ----------- FEES ENDPOINTS ------
 @app.route('/fees', methods=['GET'])
 def on_get_fees():
-    return MongoConnection.get_fees()
+    return DatabaseFees.get_fees()
 
 
 @app.route('/fees', methods=['POST'])
@@ -59,7 +61,7 @@ def on_post_fees():
     if validation:
         return validation
     else:
-        return MongoConnection.add_fee(fee)
+        return DatabaseFees.add_fee(fee)
 
 
 @app.route('/fees', methods=['PUT'])
@@ -70,12 +72,78 @@ def on_put_fees():
     if validation:
         return validation
     else:
-        return MongoConnection.update_fee(fee)
+        return DatabaseFees.update_fee(fee)
 
 
 @app.route('/fees/<string:fee_id>', methods=['DELETE'])
 def on_delete_fees(fee_id):
-    return MongoConnection.delete_fee(fee_id)
+    return DatabaseFees.delete_fee(fee_id)
+
+
+# ----------- COUNTRY ENDPOINTS ------
+@app.route('/countries', methods=['GET'])
+def on_get_countries():
+    return DatabaseCountry.get_countries()
+
+
+@app.route('/countries', methods=['POST'])
+def on_post_countries():
+    posted_data = request.get_json()
+    country = Country(**posted_data)
+    validation = country.validate()
+    if validation:
+        return validation
+    else:
+        return DatabaseCountry.add_country(country)
+
+
+@app.route('/countries', methods=['PUT'])
+def on_put_countries():
+    posted_data = request.get_json()
+    country = Country(**posted_data)
+    validation = country.validate()
+    if validation:
+        return validation
+    else:
+        return DatabaseCountry.update_country(country)
+
+
+@app.route('/countries/<string:country_id>', methods=['DELETE'])
+def on_delete_countries(country_id):
+    return DatabaseCountry.delete(country_id)
+
+
+# ----------- CURRENCY ENDPOINTS ------
+@app.route('/currencies', methods=['GET'])
+def on_get_currencies():
+    return DatabaseCurrency.get_currency()
+
+
+@app.route('/currencies', methods=['POST'])
+def on_post_currencies():
+    posted_data = request.get_json()
+    currency = Currency(**posted_data)
+    validation = currency.validate()
+    if validation:
+        return validation
+    else:
+        return DatabaseCurrency.add_currency(currency)
+
+
+@app.route('/currencies', methods=['PUT'])
+def on_put_currencies():
+    posted_data = request.get_json()
+    currency = Currency(**posted_data)
+    validation = currency.validate()
+    if validation:
+        return validation
+    else:
+        return DatabaseCurrency.update_currency(currency)
+
+
+@app.route('/currencies/<string:currency_id>', methods=['DELETE'])
+def on_delete_currencies(currency_id):
+    return DatabaseCurrency.delete(currency_id)
 
 
 if __name__ == '__main__':
