@@ -45,12 +45,12 @@ def on_delete(bank_id):
 
 # ----------- Szymon's efforts below :) ------
 
-@app.route('/fees/get', methods=['GET'])
+@app.route('/fees', methods=['GET'])
 def on_get_fees():
     return MongoConnection.get_fees()
 
 
-@app.route('/fees/post', methods=['POST'])
+@app.route('/fees', methods=['POST'])
 def on_post_fees():
     posted_data = request.get_json()
     print(posted_data)
@@ -62,7 +62,7 @@ def on_post_fees():
         return MongoConnection.add_fee(fee)
 
 
-@app.route('/fees/put', methods=['PUT'])
+@app.route('/fees', methods=['PUT'])
 def on_put_fees():
     posted_data = request.get_json()
     fee = Fee(**posted_data)
@@ -73,7 +73,7 @@ def on_put_fees():
         return MongoConnection.update_fee(fee)
 
 
-@app.route('/fees/<string:fee_id>/delete', methods=['DELETE'])
+@app.route('/fees/<string:fee_id>', methods=['DELETE'])
 def on_delete_fees(fee_id):
     return MongoConnection.delete_fee(fee_id)
 

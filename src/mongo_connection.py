@@ -96,7 +96,6 @@ class MongoConnection:
         print(str(exception))
         return MongoConnection.TimeoutResponse
 
-
     # ----------- Szymon's efforts below :) ------
 
     @staticmethod
@@ -170,4 +169,3 @@ class MongoConnection:
                             mimetype='application/json')
         except Exception as e:
             return MongoConnection.log_and_return_error_response(e)
-
