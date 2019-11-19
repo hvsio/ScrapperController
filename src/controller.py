@@ -47,9 +47,9 @@ def on_delete(bank_id):
 
 
 # ----------- FEES ENDPOINTS ------
-@app.route('/fees', methods=['GET'])
-def on_get_fees():
-    return DatabaseFees.get_fees()
+@app.route('/fees/<string:country_iso>', methods=['GET'])
+def on_get_fees(country_iso):
+    return DatabaseFees.get_fees(country_iso)
 
 
 @app.route('/fees', methods=['POST'])

@@ -80,9 +80,10 @@ class DatabaseFees:
 
 
     @staticmethod
-    def get_fees():
+    def get_fees(country_iso):
         try:
-            data = DatabaseFees.connect_to_fees_database().find({}, {"_id": 0, })
+            query = {"country": country_iso}
+            data = DatabaseFees.connect_to_fees_database().find(query, {"_id": 0, })
             fees = dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
             fees = json.loads(fees)
 
