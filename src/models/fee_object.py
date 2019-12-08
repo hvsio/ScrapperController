@@ -6,7 +6,7 @@ from flask import Response, json
 
 
 class Fee:
-    def __init__(self, country, sepa, intl, *args, **kwargs):
+    def __init__(self, country, sepa, intl, currency, *args, **kwargs):
         if 'id' in kwargs:
             self.id = kwargs.get('id')
         else:
@@ -14,6 +14,7 @@ class Fee:
         self.country = country
         self.sepa = float(sepa)
         self.intl = float(intl)
+        self.currency = currency
 
     def to_JSON(self):
         string = json.dumps(self, default=lambda o: getattr(o, '__dict__', str(o)))
