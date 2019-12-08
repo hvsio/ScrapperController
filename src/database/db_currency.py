@@ -58,7 +58,7 @@ class DatabaseCurrency:
         try:
             databaseRef = DatabaseCurrency.connect_to_database()
             data = currency.to_JSON()
-            query = {"name": currency.name, "country": currency.country}
+            query = {"name": currency.name, "allowed": currency.allowed}
             if databaseRef.find_one(query):
                 return Response(response=json.dumps({'status': 'bank already exist'}),
                                 status=400,
