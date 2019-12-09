@@ -6,7 +6,7 @@ from flask import Response, json
 import ccy
 
 
-class DatabaseFees:
+class FeesService:
     TimeoutResponse = Response(response=json.dumps({'status': 'MongoDB timeout'}),
                                status=408,
                                mimetype='application/json')
@@ -15,12 +15,12 @@ class DatabaseFees:
     def log_and_return_error_response(exception):
         # TODO log exception variable
         print(str(exception))
-        return DatabaseFees.TimeoutResponse
+        return FeesService.TimeoutResponse
 
     @staticmethod
     def add_fee(fee):
         try:
-            databaseRef = DatabaseFees.connect_to_fees_database()
+            databaseRef = FeesService.connect_to_fees_database()
             data = fee.to_JSON()
             query = {"country": fee.country}
             if databaseRef.find_one(query):
@@ -33,12 +33,12 @@ class DatabaseFees:
                                 status=201,
                                 mimetype='application/json')
         except Exception as e:
-            return DatabaseFees.log_and_return_error_response(e)
+            return FeesService.log_and_return_error_response(e)
 
     @staticmethod
     def update_fee(fee):
         try:
-            databaseRef = DatabaseFees.connect_to_fees_database()
+            databaseRef = FeesService.connect_to_fees_database()
             query = {"id": fee.id}
             data = fee.to_JSON()
             if databaseRef.find_one(query):
@@ -47,14 +47,14 @@ class DatabaseFees:
                                 status=200,
                                 mimetype='application/json')
             else:
-                return DatabaseFees.add_fee(fee)
+                return FeesService.add_fee(fee)
         except Exception as e:
-            return DatabaseFees.log_and_return_error_response(e)
+            return FeesService.log_and_return_error_response(e)
 
     @staticmethod
     def delete_fee(fee_id):
         try:
-            databaseRef = DatabaseFees.connect_to_fees_database()
+            databaseRef = FeesService.connect_to_fees_database()
             query = {"id": fee_id}
             result = databaseRef.find_one(query)
             if result:
@@ -67,7 +67,7 @@ class DatabaseFees:
                                 status=400,
                                 mimetype='application/json')
         except Exception as e:
-            return DatabaseFees.log_and_return_error_response(e)
+            return FeesService.log_and_return_error_response(e)
 
     @staticmethod
     def connect_to_fees_database():
@@ -86,7 +86,7 @@ class DatabaseFees:
                 query = {}
             else:
                 query = {"country": country_iso}
-            data = DatabaseFees.connect_to_fees_database().find(query, {"_id": 0, })
+            data = FeesService.connect_to_fees_database().find(query, {"_id": 0, })
             fees = dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
             fees = json.loads(fees)
 
@@ -96,5 +96,5 @@ class DatabaseFees:
             fees = dumps(fees, sort_keys=True, indent=4, separators=(',', ': '))
             return Response(response=fees, status=201, mimetype='application/json')
         except Exception as e:
-            return DatabaseFees.log_and_return_error_response(e)
+            return FeesService.log_and_return_error_response(e)
 

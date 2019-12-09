@@ -1,6 +1,6 @@
 import json
-from src.country_codes import CC
-from src.dictionary import ERRORS
+from src.models.country_codes import CC
+from src.models.dictionary import ERRORS
 from bson import ObjectId
 from flask import Response, json
 

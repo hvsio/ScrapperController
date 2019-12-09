@@ -1,11 +1,11 @@
 import json
 import lxml.etree
 import validators
-from src.dictionary import ERRORS
+from src.models.dictionary import ERRORS
 from bson import ObjectId
 from iso4217 import Currency
 from flask import Response, json
-from src.country_codes import CC
+from src.models.country_codes import CC
 
 
 class BankXpath:

@@ -7,4 +7,4 @@ RUN update-ca-certificates
 RUN pip install -r requirements.txt
 EXPOSE 8000
 ENV PYTHONPATH="$PYTHONPATH:/app"
-CMD python ./src/controller.py cloud
+CMD python ./src/controllers/controller.py cloud

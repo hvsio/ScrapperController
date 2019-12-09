@@ -1,6 +1,6 @@
 import unittest
-from src.bank_xpath import BankXpath
-from src.dictionary import ERRORS
+from src.models.bank_xpath import BankXpath
+from src.models.dictionary import ERRORS
 
 
 class TestingBanksModels(unittest.TestCase):
